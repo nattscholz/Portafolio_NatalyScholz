@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{general/fragmentos :: head}">
+    <title>Categorías</title>
+</head>
+<body>
+
+<header th:replace="~{general/fragmentos :: header}"></header>
+
+<section class="container mt-5">
+    <h2>Listado de Categorías</h2>
+
+    <div class="mb-3">
+        <a href="#" class="btn btn-success">Agregar categoría</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descripción</th>
+                <th>Imagen</th>
+                <th>Activo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="categoria : ${categorias}">
+                <td th:text="${categoria.idCategoria}"></td>
+                <td th:text="${categoria.descripcion}"></td>
+                <td>
+                    <img th:src="${categoria.imagen}" width="80" alt="Imagen categoría"/>
+                </td>
+                <td th:text="${categoria.activo}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="alert alert-info">
+        Total de categorías:
+        <span th:text="${totalCategorias}"></span>
+    </div>
+</section>
+
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+</body>
+</html>
