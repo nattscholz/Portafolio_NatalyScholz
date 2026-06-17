@@ -32,12 +32,10 @@ public class ProjectConfig implements WebMvcConfigurer{
     // Los siguientes métodos son para implementar el tema de seguridad dentro del proyecto
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("index");
+        //registry.addViewController("/").setViewName("index");
         registry.addViewController("/ejemplo2").setViewName("ejemplo2");
         registry.addViewController("/multimedia").setViewName("multimedia");
         registry.addViewController("/iframes").setViewName("iframes");
-        registry.addViewController("/login").setViewName("login");
-        registry.addViewController("/registro/nuevo").setViewName("/registro/nuevo");
     }
 
     // El siguiente método se utilizará para publicar en la nube, independientemente

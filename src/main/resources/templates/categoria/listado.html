@@ -1,47 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{general/fragmentos :: head}">
-    <title>Categorías</title>
-</head>
-<body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 
-<header th:replace="~{general/fragmentos :: header}"></header>
+    <head th:replace="~{general/fragmentos :: head}"></head>
 
-<section class="container mt-5">
-    <h2>Listado de Categorías</h2>
+    <body>
 
-    <div class="mb-3">
-        <a href="#" class="btn btn-success">Agregar categoría</a>
-    </div>
+        <header th:replace="~{general/fragmentos :: header}"></header>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Descripción</th>
-                <th>Imagen</th>
-                <th>Activo</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="categoria : ${categorias}">
-                <td th:text="${categoria.idCategoria}"></td>
-                <td th:text="${categoria.descripcion}"></td>
-                <td>
-                    <img th:src="${categoria.imagen}" width="80" alt="Imagen categoría"/>
-                </td>
-                <td th:text="${categoria.activo}"></td>
-            </tr>
-        </tbody>
-    </table>
+        <main class="container mt-5">
 
-    <div class="alert alert-info">
-        Total de categorías:
-        <span th:text="${totalCategorias}"></span>
-    </div>
-</section>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <h2>Listado de Categorías</h2>
+                    <p>
+                        Total de categorías:
+                        <span th:text="${totalCategorias}">0</span>
+                    </p>
+                </div>
+            </div>
 
-<footer th:replace="~{general/fragmentos :: footer}"></footer>
+            <div class="row" th:if="${categorias != null and !categorias.empty}">
 
-</body>
+                <div class="col-md-3 mb-4" th:each="categoria : ${categorias}">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <img th:src="${categoria.rutaImagen}"
+                             class="card-img-top"
+                             alt="Imagen de categoría"
+                             style="height: 180px; object-fit: cover;"/>
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title" th:text="${categoria.descripcion}">
+                                Categoría
+                            </h5>
+
+                            <span th:if="${categoria.activo}" class="badge bg-success">
+                                Activa
+                            </span>
+
+                            <span th:unless="${categoria.activo}" class="badge bg-danger">
+                                Inactiva
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="alert alert-warning" th:if="${categorias == null or categorias.empty}">
+                No hay categorías disponibles para mostrar.
+            </div>
+
+        </main>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+    </body>
 </html>
