@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <body>
+
+        <!-- Fragmento #1: Botón para agregar una nueva categoría -->
+        <section th:fragment="agregar" class="container mt-4">
+
+            <div class="row">
+                <div class="col-md-12 text-end">
+
+                    <a th:href="@{/categoria/nuevo}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Agregar Categoría
+                    </a>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Fragmento #2: Listado de categorías -->
+        <section th:fragment="listado" class="container mt-4">
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+
+                    <h2>Listado de Categorías</h2>
+
+                    <p>
+                        Total de categorías:
+                        <span th:text="${totalCategorias}">0</span>
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="row" th:if="${categorias != null and !categorias.empty}">
+
+                <div class="col-md-3 mb-4" th:each="categoria : ${categorias}">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <img th:src="${categoria.rutaImagen}"
+                             class="card-img-top"
+                             alt="Imagen de categoría"
+                             style="height: 180px; object-fit: cover;"/>
+
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title" th:text="${categoria.descripcion}">
+                                Categoría
+                            </h5>
+
+                            <p>
+                                <span th:if="${categoria.activo}" class="badge bg-success">
+                                    Activa
+                                </span>
+
+                                <span th:unless="${categoria.activo}" class="badge bg-danger">
+                                    Inactiva
+                                </span>
+                            </p>
+
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <a th:href="@{/categoria/modificar/} + ${categoria.idCategoria}"
+                                   class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                    Modificar
+                                </a>
+
+                                <button type="button"
+                                        class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#confirmModal"
+                                        th:attr="data-bs-id=${categoria.idCategoria},
+                                                 data-bs-descripcion=${categoria.descripcion}">
+                                    <i class="fas fa-trash"></i>
+                                    Eliminar
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="alert alert-warning"
+                 th:if="${categorias == null or categorias.empty}">
+                No hay categorías disponibles para mostrar.
+            </div>
+
+        </section>
+
+        <!-- Fragmento #3: Formulario para agregar o modificar categoría -->
+        <section th:fragment="editar" class="container mt-4">
+
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+
+                    <div class="card shadow-sm">
+
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-edit"></i>
+                                Mantenimiento de Categoría
+                            </h4>
+                        </div>
+
+                        <div class="card-body">
+
+                            <form th:action="@{/categoria/guardar}"
+                                  th:object="${categoria}"
+                                  method="post"
+                                  enctype="multipart/form-data">
+
+                                <input type="hidden" th:field="*{idCategoria}"/>
+
+                                <div class="mb-3">
+                                    <label for="descripcion" class="form-label">
+                                        Descripción
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="descripcion"
+                                           th:field="*{descripcion}"
+                                           required="true"
+                                           placeholder="Digite la descripción de la categoría"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="imagenFile" class="form-label">
+                                        Imagen
+                                    </label>
+
+                                    <input type="file"
+                                           class="form-control"
+                                           id="imagenFile"
+                                           name="imagenFile"
+                                           accept="image/*"
+                                           onchange="mostrarImagen(this);"/>
+                                </div>
+
+                                <div class="mb-3 text-center">
+
+                                    <img id="blah"
+                                         th:src="${categoria.rutaImagen}"
+                                         alt="Vista previa"
+                                         style="max-height: 200px;"
+                                         class="img-thumbnail"
+                                         th:if="${categoria.rutaImagen != null and categoria.rutaImagen != ''}"/>
+
+                                    <img id="blah"
+                                         src="#"
+                                         alt="Vista previa"
+                                         style="max-height: 200px;"
+                                         class="img-thumbnail"
+                                         th:if="${categoria.rutaImagen == null or categoria.rutaImagen == ''}"/>
+
+                                </div>
+
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           id="activo"
+                                           th:field="*{activo}"/>
+
+                                    <label class="form-check-label" for="activo">
+                                        Activa
+                                    </label>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+
+                                    <a th:href="@{/categoria/listado}"
+                                       class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Regresar
+                                    </a>
+
+                                    <button type="submit"
+                                            class="btn btn-success">
+                                        <i class="fas fa-save"></i>
+                                        Guardar
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Fragmento #4: Modal para confirmar eliminación -->
+        <section th:fragment="confirmarEliminar">
+
+            <div class="modal fade"
+                 id="confirmModal"
+                 tabindex="-1"
+                 aria-labelledby="confirmModalLabel"
+                 aria-hidden="true">
+
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+
+                        <form th:action="@{/categoria/eliminar}" method="post">
+
+                            <div class="modal-header bg-danger text-white">
+
+                                <h5 class="modal-title" id="confirmModalLabel">
+                                    <i class="fas fa-trash"></i>
+                                    Confirmar eliminación
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                </button>
+
+                            </div>
+
+                            <div class="modal-body">
+
+                                <input type="hidden"
+                                       name="idCategoria"
+                                       id="modalId"/>
+
+                                <p>
+                                    ¿Está segura de que desea eliminar la categoría?
+                                </p>
+
+                                <p>
+                                    <strong id="modalDescripcion"></strong>
+                                </p>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Cancelar
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-danger">
+                                    Eliminar
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </body>
+</html>
