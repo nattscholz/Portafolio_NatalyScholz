@@ -4,8 +4,19 @@
  */
 package TechShop.NatalyScholz.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -19,9 +30,6 @@ public class Producto implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto")
     private Long idProducto;
-
-    @Column(name = "id_categoria")
-    private Long idCategoria;
 
     @Column(nullable = false, length = 50)
     @NotBlank(message = "La descripción no puede estar vacía.")
@@ -43,21 +51,27 @@ public class Producto implements Serializable {
     @Column(name = "ruta_imagen", length = 1024)
     private String rutaImagen;
 
+    @Column(name = "activo")
     private boolean activo;
+
+    // Relación de muchos a uno con Categoria
+    @ManyToOne
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
 
     public Producto() {
     }
 
-    public Producto(Long idProducto, Long idCategoria, String descripcion, String detalle,
-                    BigDecimal precio, Integer existencias, String rutaImagen, boolean activo) {
+    public Producto(Long idProducto, String descripcion, String detalle, BigDecimal precio,
+                    Integer existencias, String rutaImagen, boolean activo, Categoria categoria) {
         this.idProducto = idProducto;
-        this.idCategoria = idCategoria;
         this.descripcion = descripcion;
         this.detalle = detalle;
         this.precio = precio;
         this.existencias = existencias;
         this.rutaImagen = rutaImagen;
         this.activo = activo;
+        this.categoria = categoria;
     }
 
     public Long getIdProducto() {
@@ -66,14 +80,6 @@ public class Producto implements Serializable {
 
     public void setIdProducto(Long idProducto) {
         this.idProducto = idProducto;
-    }
-
-    public Long getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(Long idCategoria) {
-        this.idCategoria = idCategoria;
     }
 
     public String getDescripcion() {
@@ -122,5 +128,13 @@ public class Producto implements Serializable {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }
