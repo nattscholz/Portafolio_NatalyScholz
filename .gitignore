@@ -33,3 +33,9 @@ build/
 .vscode/
 
 src/main/resources/firebase/*.json
+
+# Archivos generados por Maven
+target/
+
+# Clave privada de Firebase
+Firebase/*.json
