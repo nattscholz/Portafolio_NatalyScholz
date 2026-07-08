@@ -4,19 +4,7 @@
  */
 package TechShop.NatalyScholz.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -31,30 +19,24 @@ public class Producto implements Serializable {
     @Column(name = "id_producto")
     private Long idProducto;
 
-    @Column(nullable = false, length = 50)
-    @NotBlank(message = "La descripción no puede estar vacía.")
-    @Size(max = 50, message = "La descripción no puede tener más de 50 caracteres.")
+    @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "detalle")
     private String detalle;
 
-    @Column(precision = 12, scale = 2)
-    @NotNull(message = "El precio no puede estar vacío.")
-    @DecimalMin(value = "0.01", inclusive = true, message = "El precio debe ser mayor a 0.")
-    private BigDecimal precio;
+    @Column(name = "precio")
+    private double precio;
 
-    @NotNull(message = "El campo de existencias no puede estar vacío.")
-    @Min(value = 0, message = "Las existencias deben ser un número mayor o igual a 0.")
-    private Integer existencias;
+    @Column(name = "existencias")
+    private int existencias;
 
-    @Column(name = "ruta_imagen", length = 1024)
+    @Column(name = "ruta_imagen")
     private String rutaImagen;
 
     @Column(name = "activo")
     private boolean activo;
 
-    // Relación de muchos a uno con Categoria
     @ManyToOne
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
@@ -62,8 +44,8 @@ public class Producto implements Serializable {
     public Producto() {
     }
 
-    public Producto(Long idProducto, String descripcion, String detalle, BigDecimal precio,
-                    Integer existencias, String rutaImagen, boolean activo, Categoria categoria) {
+    public Producto(Long idProducto, String descripcion, String detalle, double precio,
+                    int existencias, String rutaImagen, boolean activo, Categoria categoria) {
         this.idProducto = idProducto;
         this.descripcion = descripcion;
         this.detalle = detalle;
@@ -98,19 +80,19 @@ public class Producto implements Serializable {
         this.detalle = detalle;
     }
 
-    public BigDecimal getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(BigDecimal precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 
-    public Integer getExistencias() {
+    public int getExistencias() {
         return existencias;
     }
 
-    public void setExistencias(Integer existencias) {
+    public void setExistencias(int existencias) {
         this.existencias = existencias;
     }
 
