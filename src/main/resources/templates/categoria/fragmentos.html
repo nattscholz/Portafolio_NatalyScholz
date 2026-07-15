@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
     <body>
 
@@ -10,10 +11,12 @@
             <div class="row">
                 <div class="col-md-12 text-end">
 
-                    <a th:href="@{/categoria/nuevo}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i>
-                        Agregar Categoría
-                    </a>
+                    <a th:href="@{/categoria/nuevo}"
+                        class="btn btn-primary"
+                        sec:authorize="hasRole('ROLE_ADMIN')">
+                         <i class="fas fa-plus"></i>
+                         Agregar Categoría
+                     </a>
 
                 </div>
             </div>
@@ -65,21 +68,23 @@
 
                             <div class="d-flex justify-content-center gap-2">
 
-                                <a th:href="@{/categoria/modificar/} + ${categoria.idCategoria}"
-                                   class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                    Modificar
-                                </a>
+                               <button type="button"
+                                    class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#confirmModal"
+                                    th:attr="data-bs-id=${categoria.idCategoria},
+                                             data-bs-descripcion=${categoria.descripcion}"
+                                    sec:authorize="hasRole('ROLE_ADMIN')">
+                                <i class="fas fa-trash"></i>
+                                Eliminar
+                            </button>
 
-                                <button type="button"
-                                        class="btn btn-danger btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#confirmModal"
-                                        th:attr="data-bs-id=${categoria.idCategoria},
-                                                 data-bs-descripcion=${categoria.descripcion}">
-                                    <i class="fas fa-trash"></i>
-                                    Eliminar
-                                </button>
+                            <a th:href="@{/categoria/modificar/} + ${categoria.idCategoria}"
+                               class="btn btn-warning btn-sm"
+                               sec:authorize="hasRole('ROLE_ADMIN')">
+                                <i class="fas fa-edit"></i>
+                                Actualizar
+                            </a>
 
                             </div>
 

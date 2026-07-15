@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
     <body>
 
@@ -14,7 +15,8 @@
                         <button type="button"
                                 class="btn btn-primary"
                                 data-bs-toggle="modal"
-                                data-bs-target="#agregarProductoModal">
+                                data-bs-target="#agregarProductoModal"
+                                sec:authorize="hasRole('ROLE_ADMIN')">
                             <i class="fa-solid fa-plus"></i>
                             Agregar Producto
                         </button>
@@ -270,13 +272,15 @@
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#confirmModal"
                                                     th:attr="data-bs-id=${p.idProducto},
-                                                             data-bs-descripcion=${p.descripcion}">
+                                                    data-bs-descripcion=${p.descripcion}"
+                                                    sec:authorize="hasRole('ROLE_ADMIN')">
                                                 <i class="fa-solid fa-trash"></i>
                                                 Eliminar
                                             </button>
 
                                             <a th:href="@{/producto/modificar/} + ${p.idProducto}"
-                                               class="btn btn-warning btn-sm">
+                                               class="btn btn-warning btn-sm"
+                                               sec:authorize="hasRole('ROLE_ADMIN')">
                                                 <i class="fa-solid fa-pencil"></i>
                                                 Actualizar
                                             </a>
