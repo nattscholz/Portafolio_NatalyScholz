@@ -9,24 +9,25 @@ package TechShop.NatalyScholz.config;
  * @author natts
  */
 
+import TechShop.NatalyScholz.service.RutaService;
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
 
-    /*
-     * Rutas públicas:
-     * Cualquier persona puede acceder sin iniciar sesión.
-     */
+    private final RutaService rutaService;
+
+    public SecurityConfig(RutaService rutaService) {
+        this.rutaService = rutaService;
+    }
+
     private static final String[] PUBLIC_URLS = {
         "/",
         "/index",
@@ -42,27 +43,15 @@ public class SecurityConfig {
         "/webjars/**"
     };
 
-    /*
-     * Rutas para usuario final.
-     * Por ejemplo: carrito y compra.
-     */
     private static final String[] USUARIO_URLS = {
         "/carrito/**"
     };
 
-    /*
-     * Rutas permitidas para ADMIN o VENDEDOR.
-     * VENDEDOR puede consultar listados, pero no debería modificar.
-     */
     private static final String[] ADMIN_OR_VENDEDOR_URLS = {
         "/categoria/listado",
         "/producto/listado"
     };
 
-    /*
-     * Rutas exclusivas de ADMIN.
-     * Aquí van acciones de agregar, guardar, modificar y eliminar.
-     */
     private static final String[] ADMIN_URLS = {
         "/categoria/nuevo",
         "/categoria/guardar",
@@ -77,33 +66,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+        String[] publicUrls = unir(PUBLIC_URLS, rutaService.getRutasPublicas());
+        String[] adminUrls = unir(ADMIN_URLS, rutaService.getRutasPorRol("ADMIN"));
+        String[] vendedorUrls = rutaService.getRutasPorRol("VENDEDOR");
+        String[] usuarioUrls = unir(USUARIO_URLS, rutaService.getRutasPorRol("USUARIO"));
+
         http
             .authorizeHttpRequests((requests) -> requests
-
-                // Rutas públicas
-                .requestMatchers(PUBLIC_URLS).permitAll()
-
-                // Rutas para usuario final
-                .requestMatchers(USUARIO_URLS).hasRole("USUARIO")
-
-                // Rutas para ADMIN o VENDEDOR
+                .requestMatchers(publicUrls).permitAll()
+                .requestMatchers(usuarioUrls).hasRole("USUARIO")
                 .requestMatchers(ADMIN_OR_VENDEDOR_URLS).hasAnyRole("ADMIN", "VENDEDOR")
-
-                // Rutas solo ADMIN
-                .requestMatchers(ADMIN_URLS).hasRole("ADMIN")
-
-                // Cualquier otra ruta requiere autenticación
+                .requestMatchers(vendedorUrls).hasAnyRole("ADMIN", "VENDEDOR")
+                .requestMatchers(adminUrls).hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
 
-            // Login personalizado
             .formLogin((form) -> form
                 .loginPage("/login")
                 .permitAll()
                 .defaultSuccessUrl("/", true)
             )
 
-            // Logout
             .logout((logout) -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
@@ -112,12 +95,10 @@ public class SecurityConfig {
                 .permitAll()
             )
 
-            // Página de acceso denegado
             .exceptionHandling((exception) -> exception
                 .accessDeniedPage("/acceso_denegado")
             )
 
-            // Manejo de sesiones
             .sessionManagement((session) -> session
                 .maximumSessions(1)
                 .expiredUrl("/login?expired")
@@ -126,43 +107,14 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /*
-     * PasswordEncoder:
-     * BCrypt se usa para encriptar las contraseñas.
-     */
+    private String[] unir(String[] arreglo1, String[] arreglo2) {
+        return Stream.concat(Arrays.stream(arreglo1), Arrays.stream(arreglo2))
+                .distinct()
+                .toArray(String[]::new);
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /*
-     * Usuarios en memoria para fase de desarrollo.
-     * Según la presentación:
-     * Juan = admin
-     * Rebeca = vendedor
-     * Pedro = usuario
-     */
-    @Bean
-    public UserDetailsService users(PasswordEncoder passwordEncoder) {
-
-        UserDetails juan = User.builder()
-                .username("juan")
-                .password(passwordEncoder.encode("123"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails rebeca = User.builder()
-                .username("rebeca")
-                .password(passwordEncoder.encode("123"))
-                .roles("VENDEDOR")
-                .build();
-
-        UserDetails pedro = User.builder()
-                .username("pedro")
-                .password(passwordEncoder.encode("123"))
-                .roles("USUARIO")
-                .build();
-
-        return new InMemoryUserDetailsManager(juan, rebeca, pedro);
     }
 }
