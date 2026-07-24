@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{general/fragmentos :: head}">
+</head>
+
+<body>
+
+<header th:replace="~{general/fragmentos :: header}"></header>
+
+<main class="container mt-4 mb-5">
+
+    <div class="row mb-4">
+
+        <div class="col-12">
+
+            <div class="d-flex flex-column flex-md-row
+                        justify-content-between
+                        align-items-md-center
+                        gap-3">
+
+                <div>
+                    <h2 class="mb-1">
+                        Administración de usuarios
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Total de usuarios:
+                        <strong th:text="${totalUsuarios}">
+                            0
+                        </strong>
+                    </p>
+                </div>
+
+                <div>
+                    <a th:href="@{/usuario/nuevo}"
+                       class="btn btn-primary">
+
+                        <i class="fas fa-user-plus me-1"></i>
+                        Agregar usuario
+
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:if="${mensaje}"
+         class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
+        <span th:text="${mensaje}"></span>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Cerrar">
+        </button>
+
+    </div>
+
+    <div th:if="${error}"
+         class="alert alert-danger alert-dismissible fade show"
+         role="alert">
+
+        <span th:text="${error}"></span>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Cerrar">
+        </button>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+                Lista de usuarios
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div th:if="${usuarios == null or #lists.isEmpty(usuarios)}"
+                 class="alert alert-info mb-0">
+
+                No hay usuarios registrados.
+
+            </div>
+
+            <div th:unless="${usuarios == null or #lists.isEmpty(usuarios)}"
+                 class="table-responsive">
+
+                <table class="table table-striped
+                              table-hover
+                              table-bordered
+                              align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Imagen</th>
+                        <th>Usuario</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Estado</th>
+                        <th>Roles</th>
+                        <th class="text-center">
+                            Acciones
+                        </th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="u : ${usuarios}">
+
+                        <td th:text="${u.idUsuario}">
+                            1
+                        </td>
+
+                        <td class="text-center">
+
+                            <img th:if="${u.rutaImagen != null
+                                        and !#strings.isEmpty(u.rutaImagen)}"
+                                 th:src="${u.rutaImagen}"
+                                 alt="Imagen del usuario"
+                                 width="55"
+                                 height="55"
+                                 class="rounded-circle object-fit-cover">
+
+                            <span th:unless="${u.rutaImagen != null
+                                             and !#strings.isEmpty(u.rutaImagen)}"
+                                  class="text-muted">
+
+                                Sin imagen
+
+                            </span>
+
+                        </td>
+
+                        <td th:text="${u.username}">
+                            usuario
+                        </td>
+
+                        <td th:text="${u.nombre}">
+                            Nombre
+                        </td>
+
+                        <td th:text="${u.correo}">
+                            correo@ejemplo.com
+                        </td>
+
+                        <td>
+
+                            <span th:if="${u.activo}"
+                                  class="badge bg-success">
+
+                                Activo
+
+                            </span>
+
+                            <span th:unless="${u.activo}"
+                                  class="badge bg-danger">
+
+                                Inactivo
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span th:if="${u.roles == null
+                                         or #sets.isEmpty(u.roles)}"
+                                  class="text-muted">
+
+                                Sin rol
+
+                            </span>
+
+                            <span th:each="rol : ${u.roles}"
+                                  th:text="${rol.nombre}"
+                                  class="badge bg-secondary me-1">
+
+                                ROL
+
+                            </span>
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <div class="d-flex
+                                        justify-content-center
+                                        flex-wrap
+                                        gap-2">
+
+                                <a th:href="@{/usuario/modificar/{id}
+                                    (id=${u.idUsuario})}"
+                                   class="btn btn-warning btn-sm">
+
+                                    <i class="fas fa-edit me-1"></i>
+                                    Editar
+
+                                </a>
+
+                                <a th:href="@{/usuario/eliminar/{id}
+                                    (id=${u.idUsuario})}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm(
+                                   '¿Está seguro de eliminar este usuario?'
+                                   );">
+
+                                    <i class="fas fa-trash me-1"></i>
+                                    Eliminar
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+</body>
+
+</html>

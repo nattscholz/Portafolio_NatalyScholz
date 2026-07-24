@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{general/fragmentos :: head}">
+</head>
+
+<body>
+
+<header th:replace="~{general/fragmentos :: header}"></header>
+
+<main class="container mt-4 mb-5">
+
+    <div class="row mb-4">
+
+        <div class="col-12">
+
+            <div class="d-flex flex-column flex-md-row
+                        justify-content-between
+                        align-items-md-center
+                        gap-3">
+
+                <div>
+
+                    <h2 class="mb-1">
+                        Administración de clientes
+                    </h2>
+
+                    <p class="text-muted mb-0">
+
+                        Total de clientes:
+
+                        <strong th:text="${totalClientes}">
+                            0
+                        </strong>
+
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <a th:href="@{/cliente/nuevo}"
+                       class="btn btn-primary">
+
+                        <i class="fas fa-user-plus me-1"></i>
+                        Agregar cliente
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:if="${mensaje}"
+         class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
+        <span th:text="${mensaje}"></span>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Cerrar">
+        </button>
+
+    </div>
+
+    <div th:if="${error}"
+         class="alert alert-danger alert-dismissible fade show"
+         role="alert">
+
+        <span th:text="${error}"></span>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Cerrar">
+        </button>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+                Lista de clientes
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div th:if="${clientes == null or #lists.isEmpty(clientes)}"
+                 class="alert alert-info mb-0">
+
+                No hay clientes registrados.
+
+            </div>
+
+            <div th:unless="${clientes == null or #lists.isEmpty(clientes)}"
+                 class="table-responsive">
+
+                <table class="table table-striped
+                              table-hover
+                              table-bordered
+                              align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Imagen</th>
+                        <th>Nombre completo</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+
+                        <th class="text-center">
+                            Acciones
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="c : ${clientes}">
+
+                        <td th:text="${c.idCliente}">
+                            1
+                        </td>
+
+                        <td class="text-center">
+
+                            <img th:if="${c.rutaImagen != null
+                                        and !#strings.isEmpty(c.rutaImagen)}"
+                                 th:src="${c.rutaImagen}"
+                                 alt="Imagen del cliente"
+                                 width="55"
+                                 height="55"
+                                 class="rounded-circle object-fit-cover">
+
+                            <span th:unless="${c.rutaImagen != null
+                                             and !#strings.isEmpty(c.rutaImagen)}"
+                                  class="text-muted">
+
+                                Sin imagen
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span th:text="${c.nombre}">
+                                Nombre
+                            </span>
+
+                            <span th:text="${c.apellidos}">
+                                Apellidos
+                            </span>
+
+                        </td>
+
+                        <td th:text="${c.correo}">
+                            correo@ejemplo.com
+                        </td>
+
+                        <td th:text="${c.telefono}">
+                            8888-8888
+                        </td>
+
+                        <td th:text="${c.direccion}">
+                            Dirección
+                        </td>
+
+                        <td>
+
+                            <span th:if="${c.activo}"
+                                  class="badge bg-success">
+
+   
