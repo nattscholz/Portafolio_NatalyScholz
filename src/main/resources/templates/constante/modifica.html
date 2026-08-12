@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}">
+        <title>TechShop</title>
+    </head>
+
+    <body>
+
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <section class="py-4 bg-warning">
+            <div class="container">
+                <h1>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Modificar constante
+                </h1>
+            </div>
+        </section>
+
+        <section class="container mt-4">
+
+            <div class="card">
+                <div class="card-header">
+                    Datos de la constante
+                </div>
+
+                <div class="card-body">
+
+                    <form th:action="@{/constante/guardar}"
+                          method="post"
+                          th:object="${constante}">
+
+                        <input type="hidden" th:field="*{idConstante}"/>
+
+                        <div class="mb-3">
+                            <label class="form-label">Atributo</label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{atributo}"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Valor</label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{valor}"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control"
+                                      th:field="*{descripcion}"
+                                      rows="3">
+                            </textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   th:field="*{activo}"/>
+
+                            <label class="form-check-label">
+                                Activo
+                            </label>
+                        </div>
+
+                        <div class="text-end">
+                            <a th:href="@{/constante/listado}"
+                               class="btn btn-secondary">
+                                Cancelar
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Guardar cambios
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </section>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+    </body>
+</html>
