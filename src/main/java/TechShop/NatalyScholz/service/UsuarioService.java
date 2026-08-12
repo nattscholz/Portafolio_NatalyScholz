@@ -71,11 +71,6 @@ public class UsuarioService {
                      MultipartFile imagenFile,
                      String nombreRol) {
 
-        /*
-         * Si el usuario es nuevo, se cifra la contraseña.
-         * Si se está modificando y la contraseña viene vacía,
-         * se conserva la contraseña anterior.
-         */
         if (usuario.getIdUsuario() == null) {
 
             if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
@@ -102,19 +97,12 @@ public class UsuarioService {
                 );
             }
 
-            /*
-             * Si no se selecciona una imagen nueva,
-             * se conserva la ruta anterior.
-             */
             if (usuario.getRutaImagen() == null
                     || usuario.getRutaImagen().isBlank()) {
                 usuario.setRutaImagen(usuarioActual.getRutaImagen());
             }
         }
 
-        /*
-         * Busca el rol seleccionado y lo asigna al usuario.
-         */
         Rol rol = rolRepository.findByNombre(nombreRol)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
@@ -126,14 +114,8 @@ public class UsuarioService {
         roles.add(rol);
         usuario.setRoles(roles);
 
-        /*
-         * Se guarda primero para obtener el ID.
-         */
         usuario = usuarioRepository.save(usuario);
 
-        /*
-         * Si se seleccionó una imagen, se sube a Firebase.
-         */
         if (imagenFile != null && !imagenFile.isEmpty()) {
             try {
                 String rutaImagen = firebaseStorageService.uploadImage(

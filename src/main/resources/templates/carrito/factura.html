@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}"/>
+
+    <body>
+
+        <header th:replace="~{general/fragmentos :: header}"/>
+
+        <section class="py-4 bg-success text-white">
+            <div class="container">
+                <h1>
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    Factura
+                </h1>
+            </div>
+        </section>
+
+        <section class="container mt-4">
+
+            <div class="card">
+
+                <div class="card-header">
+                    Detalle de factura
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Número de factura:</strong>
+                            <span th:text="${factura.idFactura}"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Fecha:</strong>
+                            <span th:text="${factura.fecha}"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Estado:</strong>
+                            <span th:text="${factura.estado}"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <strong>Cliente:</strong>
+                            <span th:text="${factura.usuario.nombre}"></span>
+                            <span th:text="${factura.usuario.apellidos}"></span>
+                        </div>
+                    </div>
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio histórico</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="venta : ${factura.ventas}">
+                                <td th:text="${venta.producto.descripcion}"></td>
+                                <td th:text="${venta.precioHistorico}"></td>
+                                <td th:text="${venta.cantidad}"></td>
+                                <td th:text="${venta.subTotal}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-end">
+                        <h3>
+                            Total:
+                            <span th:text="${factura.total}"></span>
+                        </h3>
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <a th:href="@{/producto/listado}" class="btn btn-primary">
+                            Volver a productos
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <footer th:replace="~{general/fragmentos :: footer}"/>
+
+    </body>
+</html>
